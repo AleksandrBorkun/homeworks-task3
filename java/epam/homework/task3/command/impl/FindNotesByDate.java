@@ -3,9 +3,10 @@ package epam.homework.task3.command.impl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import epam.homework.task3.bean.CurrentFileRequest;
 import epam.homework.task3.bean.FindNotesByDateRequest;
@@ -37,6 +38,7 @@ public class FindNotesByDate implements Command {
 		}
 		// ...
 
+		List<String> findNoteByDate = new ArrayList<>();
 		String line;
 		int lineNumber = 0;
 		String fileName = req.getFileName();
@@ -51,22 +53,26 @@ public class FindNotesByDate implements Command {
 				while ((line = br.readLine()) != null) {
 					lineNumber++;
 					if (line.contains(keyWord)) {
-						System.out.println("Was found on the " + lineNumber + " line: " + line);
+						findNoteByDate.add("Was found on the " + lineNumber + " line: " + line);
 					}
 				}
 				br.close();
-				if (lineNumber == 0)
-					System.out.println("По заданному поиску ничего не найденно. Возможно следует сохранить проект и повторить поиск. \nВы искали по дате: " + keyWord);
-				response.setErrorStatus(false);
-				response.setResultMessage("Поиск завершен успешно");
+				if (lineNumber == 0) {
+					response.setErrorStatus(true);
+					response.setErrorMessage(
+							"По заданному поиску ничего не найденно. Возможно следует сохранить проект и повторить поиск. \nВы искали по дате: "
+									+ keyWord);
+					return response;
 
-			} catch (FileNotFoundException e1) {
-				response.setErrorStatus(true);
-				response.setErrorMessage("файл с таким именем: \'" + fileName + "\'. Попробуйте еще.");
+				}
+				response.setErrorStatus(false);
+				response.setFindNoteByDate(findNoteByDate);
+				response.setResultMessage("Поиск завершен успешно");
 
 			} catch (IOException e) {
 				response.setErrorStatus(true);
-				response.setErrorMessage("чтото пошло не так... имя файла \'" + fileName + "\'. Попробуйте еще.");
+				response.setErrorMessage(e.getMessage());
+				return response;
 
 			}
 		} else {

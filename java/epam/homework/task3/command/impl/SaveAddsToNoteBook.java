@@ -50,8 +50,9 @@ public class SaveAddsToNoteBook implements Command {
 				response.setErrorStatus(false);
 				response.setResultMessage("Notes is saved to file: \'" + filePath + "\'");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				response.setErrorStatus(true);
+				response.setErrorMessage(e.getMessage());
+				return response;
 			}
 
 		}

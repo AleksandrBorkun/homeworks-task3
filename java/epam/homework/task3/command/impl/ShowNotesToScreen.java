@@ -1,5 +1,6 @@
 package epam.homework.task3.command.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import epam.homework.task3.bean.Request;
@@ -15,19 +16,23 @@ public class ShowNotesToScreen implements Command {
 
 		Response response = new Response();
 
+		List<String> showNotes = new ArrayList<>();
 		List<Note> notes = NoteBookProvider.getInstance().getNoteBook().getNotes();
 		if (notes.isEmpty() != true) {
-			response.setErrorStatus(false);
-			response.setResultMessage("The notes is shown great!");
+
 			for (Note added : notes) {
-				System.out.println(added.getNote());
+				showNotes.add(added.getNote());
 			}
+			response.setErrorStatus(false);
+			response.setShowNotes(showNotes);
+			response.setResultMessage("The notes is shown great!");
+			return response;
 		} else {
 			response.setErrorStatus(true);
 			response.setErrorMessage("You didn\'t wrote any notes yet");
+			return response;
 		}
 
-		return response;
 	}
 
 }

@@ -1,5 +1,7 @@
 package epam.homework.task3.view;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import epam.homework.task3.bean.AddNoteRequest;
@@ -92,6 +94,8 @@ public class View {
 
 			// FIND NOTES BY CONTENT
 			case 4:
+
+				List<String> findNotes = new ArrayList<>();
 				FindNotesRequest find = new FindNotesRequest();
 				find.setCommandName("FIND_NOTES");
 				System.out.println("To Find Notes By Content, pls write your key word for search: ");
@@ -101,6 +105,11 @@ public class View {
 				if (findContent.isErrorStatus() == true) {
 					System.out.println(findContent.getErrorMessage());
 				} else {
+					findNotes = findContent.getFindNotes();
+					for (String line : findNotes) {
+						System.out.println(line);
+					}
+
 					System.out.println(findContent.getResultMessage());
 				}
 				break;
@@ -119,7 +128,7 @@ public class View {
 				break;
 			// FIND NOTES BY DATE
 			case 6:
-
+				List<String> findNoteByDate = new ArrayList<>();
 				FindNotesByDateRequest findByDateRequest = new FindNotesByDateRequest();
 				findByDateRequest.setCommandName("FIND_NOTES_BY_DATE");
 				System.out
@@ -131,17 +140,26 @@ public class View {
 					System.out.println(findByDate.getErrorMessage());
 
 				} else {
+					findNoteByDate = findByDate.getFindNoteByDate();
+					for (String line : findNoteByDate) {
+						System.out.println(line);
+					}
 					System.out.println(findByDate.getResultMessage());
 				}
 				break;
 			// SHOW NOTES TO THE SREEN
 			case 7:
+				List<String> showNotes = new ArrayList<>();
 				Request request = new Request();
 				request.setCommandName("SHOW_NOTES_TO_SCREEN");
 				Response showResponse = controller.doRequest(request);
 				if (showResponse.isErrorStatus() == true) {
 					System.out.println(showResponse.getErrorMessage());
 				} else {
+					showNotes = showResponse.getShowNotes();
+					for (String line : showNotes) {
+						System.out.println(line);
+					}
 					System.out.println(showResponse.getResultMessage());
 				}
 

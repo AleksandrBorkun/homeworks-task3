@@ -3,9 +3,10 @@ package epam.homework.task3.command.impl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import epam.homework.task3.bean.CurrentFileRequest;
 import epam.homework.task3.bean.FindNotesRequest;
@@ -36,6 +37,7 @@ public class FindNotes implements Command {
 		}
 		// .....
 		String line;
+		List<String> findNotes = new ArrayList<>();
 		int lineNumber = 0;
 		String fileName = req.getFileName();
 		String keyWord = req.getKeyWords();
@@ -46,26 +48,32 @@ public class FindNotes implements Command {
 			while ((line = br.readLine()) != null) {
 				lineNumber++;
 				if (line.contains(keyWord)) {
-					System.out.println("Was found on the " + lineNumber + " line: " + line);
+					findNotes.add("Was found on the " + lineNumber + " line: " + line);
 				}
 			}
 			br.close();
-			if (lineNumber == 0)
-				System.out.println("По заданному поиску ничего не найденно. Возможно следует сохранить проект и повторить поиск.\nВы искали: " + keyWord);
-			response.setErrorStatus(false);
-			response.setResultMessage("Поиск завершен успешно");
 
-		} catch (FileNotFoundException e1) {
-			response.setErrorStatus(true);
-			response.setErrorMessage("файл с таким именем: " + fileName + ". Попробуйте еще.");
+			if (lineNumber == 0) {
+				response.setErrorMessage(
+						"По заданному поиску ничего не найденно. Возможно следует сохранить проект и повторить поиск.\nВы искали: "
+								+ keyWord);
+				response.setErrorStatus(true);
+				return response;
+
+			}
+
+			response.setErrorStatus(false);
+			response.setFindNotes(findNotes);
+			response.setResultMessage("Поиск завершен успешно");
+			return response;
 
 		} catch (IOException e) {
 			response.setErrorStatus(true);
-			response.setErrorMessage("чтото пошло не так... имя файла " + fileName + ". Попробуйте еще.");
+			response.setErrorMessage(e.getMessage());
+			return response;
 
 		}
 
-		return response;
 	}
 
 }
